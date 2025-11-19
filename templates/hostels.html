@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Hostels - Campus Chronicles{% endblock %}
+
+{% block content %}
+  <script>
+    const hostelsData = {{ hostels | tojson | safe }};
+  </script>
+
+  <section class="py-20 px-6 max-w-7xl mx-auto bg-gray-50 min-h-screen"
+    x-data="{
+      searchQuery: '',
+      hostels: hostelsData,
+      filteredHostels() {
+        if (!this.searchQuery) return this.hostels;
+        const query = this.searchQuery.toLowerCase();
+        return this.hostels.filter(h =>
+          h.name.toLowerCase().includes(query) ||
+          h.description.toLowerCase().includes(query)
+        );
+      }
+    }">
+
+    <h2 class="text-4xl font-bold mb-8 text-indigo-900 text-center mt-10">Hostels at IIEST Shibpur</h2>
+
+    <div class="max-w-2xl mx-auto mb-12">
+      <input
+        type="text"
+        x-model="searchQuery"
+        placeholder="🔍 Search hostels..."
+        class="w-full px-8 py-5 text-lg rounded-full shadow-2xl border-2 border-amber-600 focus:outline-none focus:ring-4 focus:ring-amber-300 transition"
+      />
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <template x-for="hostel in filteredHostels()" :key="hostel.id">
+        <article class="bg-white rounded-3xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-500 hover:-translate-y-3 fade-in">
+          <img :src="hostel.image_url || 'https://via.placeholder.com/400x300?text=IIEST'"
+               :alt="hostel.name"
+               class="w-full h-64 object-cover">
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-3 text-indigo-900" x-text="hostel.name"></h3>
+            <p class="text-gray-700 leading-relaxed mb-4 line-clamp-3" x-text="hostel.description"></p>
+           <a :href="'/place/' + hostel.slug" class="inline-block bg-amber-100 text-amber-800 px-4 py-2 rounded-full text-sm font-semibold hover:bg-amber-200 transition cursor-pointer mt-2">
+              View Details →
+            </a>
+          </div>
+        </article>
+      </template>
+    </div>
+
+    <div x-show="filteredHostels().length === 0" class="text-center text-gray-500 text-xl mt-10">
+        No hostels found matching your search.
+    </div>
+
+  </section>
+{% endblock %}

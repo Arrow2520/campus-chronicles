@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <header class="relative h-screen bg-gradient-to-br from-indigo-950 via-blue-900 to-teal-900 text-white overflow-hidden pt-20 -mt-20">
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+    <div class="relative container mx-auto px-6 h-full flex flex-col justify-center items-start text-left">
+      <h1 class="text-6xl md:text-8xl font-bold mb-6 leading-tight fade-in text-white drop-shadow-2xl">Campus Chronicles</h1>
+      <p class="text-2xl md:text-3xl mb-10 max-w-4xl leading-relaxed fade-in">A Living Archive of IIEST Shibpur's Landmarks & Memories</p>
+      <div class="flex gap-6 fade-in">
+        <a href="/landmarks" class="bg-amber-600 text-white px-10 py-5 rounded-full text-xl font-semibold hover:bg-amber-700 transition shadow-xl">Explore Landmarks</a>
+        <a href="/hostels" class="border-2 border-amber-600 text-amber-600 px-10 py-5 rounded-full text-xl font-semibold hover:bg-amber-600 hover:text-white transition">View Hostels</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="py-20 px-7 max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+      <div class="prose prose-lg max-w-none">
+        <h2 class="text-6xl font-bold mb-10 text-indigo-900">About IIEST Shibpur</h2>
+        <p class="text-lg leading-relaxed text-gray-700">
+          Indian Institute of Engineering Science and Technology, Shibpur (IIEST Shibpur) is one of India's oldest and most prestigious public engineering and research universities. Established on 24 November 1856 as Calcutta Civil Engineering College, it is the second-oldest engineering institution in India...
+        </p>
+      </div>
+      <div>
+        <img src="https://www.iiests.ac.in/assets/images/bg/05.jpg"
+             alt="IIEST Shibpur Main Academic Building"
+             class="w-full rounded-3xl shadow-3xl object-cover border-8 border-amber-50">
+      </div>
+    </div>
+  </section>
+{% endblock %}

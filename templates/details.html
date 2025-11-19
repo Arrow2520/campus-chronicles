@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}{{ place.name }} - Campus Chronicles{% endblock %}
+
+{% block content %}
+  <div class="relative h-[60vh] w-full overflow-hidden">
+    {% if images %}
+      <img src="{{ images[0].image_url }}" alt="{{ place.name }}" class="absolute inset-0 w-full h-full object-cover">
+    {% else %}
+      <div class="absolute inset-0 bg-indigo-900 flex items-center justify-center text-white">No Image Available</div>
+    {% endif %}
+    <div class="absolute inset-0 bg-gradient-to-t from-indigo-950 via-transparent to-transparent opacity-90"></div>
+
+    <div class="absolute bottom-0 left-0 w-full p-8 md:p-16">
+      <div class="container mx-auto">
+        <span class="bg-amber-600 text-white px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider mb-4 inline-block">
+          {{ place.category }}
+        </span>
+        <h1 class="text-5xl md:text-7xl font-bold text-white drop-shadow-lg mb-4">{{ place.name }}</h1>
+      </div>
+    </div>
+  </div>
+
+  <section class="container mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-3 gap-12">
+
+    <div class="lg:col-span-2 prose prose-lg prose-indigo text-gray-700">
+      <h2 class="text-3xl font-bold text-indigo-900 mb-6">About this Place</h2>
+      <p class="whitespace-pre-line leading-relaxed">{{ place.description }}</p>
+
+      <div class="mt-12">
+        <a href="javascript:history.back()" class="inline-flex items-center text-amber-600 font-bold hover:text-amber-700 transition">
+          ← Back to Search
+        </a>
+      </div>
+    </div>
+
+    <div class="space-y-8">
+      <div class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
+        <h3 class="text-xl font-bold text-indigo-900 mb-4">Quick Facts</h3>
+        <ul class="space-y-3">
+          <li class="flex justify-between">
+            <span class="text-gray-500">Category</span>
+            <span class="font-medium text-gray-800">{{ place.category }}</span>
+          </li>
+          <li class="flex justify-between">
+            <span class="text-gray-500">Location</span>
+            <span class="font-medium text-gray-800">{{ place.latitude }}, {{ place.longitude }}</span>
+          </li>
+        </ul>
+      </div>
+
+      {% if images|length > 1 %}
+      <div>
+        <h3 class="text-2xl font-bold text-indigo-900 mb-4">Gallery</h3>
+        <div class="grid grid-cols-2 gap-4">
+          {% for img in images %}
+            {% if not loop.first %}
+              <img src="{{ img.image_url }}" class="rounded-xl shadow-md hover:scale-105 transition duration-300 cursor-pointer object-cover h-32 w-full">
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+  </section>
+{% endblock %}
