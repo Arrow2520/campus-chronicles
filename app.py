@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, render_template
+from flask.cli import load_dotenv
 from flask_cors import CORS
 import mysql.connector
 from flask_jwt_extended import (
@@ -9,22 +10,24 @@ from flask_jwt_extended import (
     get_jwt
 )
 from werkzeug.security import generate_password_hash, check_password_hash
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
-# NEW: Setup for JWT (JSON Web Tokens)
 app.config["JWT_SECRET_KEY"] = "super-secret-key-change-this"
 app.config["JWT_COOKIE_CSRF_PROTECT"] = False
 jwt = JWTManager(app)
 
 db_config = {
-    'host': '127.0.0.1',
-    'user': 'root',
-    'password': '',  # Enter your password here if you have one
-    'database': 'campus_chronicles_db'
+    'host': os.getenv("DB_HOST"),
+    'user': os.getenv("DB_USER"),
+    'password': os.getenv("DB_PASSWORD"),
+    'database': os.getenv("DB_NAME"),
+    'port': int(os.getenv("DB_PORT", 3306))
 }
-
 
 def get_db_connection():
     return mysql.connector.connect(**db_config)
@@ -215,7 +218,7 @@ def login():
     return jsonify({"error": "Invalid credentials"}), 401
 
 
-# NEW: Admin Delete Route
+# Admin Delete Route
 @app.route('/api/places/<int:place_id>', methods=['DELETE'])
 @jwt_required()
 def delete_place(place_id):
@@ -233,9 +236,7 @@ def delete_place(place_id):
 
     return jsonify({"message": "Deleted successfully"})
 
-
-
-# NEW: Add Comment Route
+# Add Comment Route
 @app.route('/api/places/<int:place_id>/comments', methods=['POST'])
 @jwt_required()
 def add_comment(place_id):
@@ -299,4 +300,4 @@ def update_profile():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
