@@ -16,14 +16,21 @@
 </head>
 <body class="text-gray-800 flex flex-col min-h-screen">
 
-  <nav class="fixed top-0 w-full bg-indigo-950/95 backdrop-blur-md z-50 border-b border-amber-600/30">
+  <nav class="fixed top-0 w-full bg-indigo-950/95 backdrop-blur-md z-50 border-b border-amber-600/30" x-data="{ loggedIn: !!localStorage.getItem('token') }">
     <div class="container mx-auto px-6 py-4">
       <div class="flex justify-between items-center">
         <a href="/" class="text-2xl font-bold text-white">Campus Chronicles</a>
-        <ul class="flex space-x-8">
+        <ul class="flex space-x-8 items-center">
           <li><a href="/" class="text-white hover:text-amber-300 transition">Home</a></li>
           <li><a href="/hostels" class="text-white hover:text-amber-300 transition">Hostels</a></li>
           <li><a href="/landmarks" class="text-white hover:text-amber-300 transition">Landmarks</a></li>
+
+          <template x-if="!loggedIn">
+              <li><a href="/login" class="bg-amber-600 px-4 py-2 rounded-full text-white font-bold hover:bg-amber-700 transition">Login</a></li>
+          </template>
+          <template x-if="loggedIn">
+              <li><button @click="localStorage.clear(); window.location.reload()" class="text-red-400 hover:text-red-300 font-bold">Logout</button></li>
+          </template>
         </ul>
       </div>
     </div>
