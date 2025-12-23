@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto mt-20 bg-white p-8 rounded-3xl shadow-xl">
+  <h2 class="text-3xl font-bold mb-6 text-indigo-900">Your Profile</h2>
+
+  <div x-data="profile()" x-init="loadProfile()">
+    <label class="block font-bold mb-2">Display Name</label>
+    <input x-model="name"
+           class="w-full border p-3 rounded-lg mb-4"
+           placeholder="Enter your name">
+
+    <button @click="saveProfile"
+            class="bg-indigo-900 text-white px-6 py-2 rounded-lg font-bold">
+      Save
+    </button>
+  </div>
+</div>
+
+<script>
+function profile() {
+  return {
+    name: '',
+    async loadProfile() {
+      const res = await fetch('/api/profile', {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      });
+      const data = await res.json();
+      this.name = data.name || '';
+    },
+    async saveProfile() {
+      await fetch('/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        },
+        body: JSON.stringify({ name: this.name })
+      });
+      alert('Profile updated');
+      localStorage.setItem('display_name', this.name);
+    }
+  }
+}
+</script>
+{% endblock %}

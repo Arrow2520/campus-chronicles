@@ -16,7 +16,7 @@
 </head>
 <body class="text-gray-800 flex flex-col min-h-screen">
 
-  <nav class="fixed top-0 w-full bg-indigo-950/95 backdrop-blur-md z-50 border-b border-amber-600/30" x-data="{ loggedIn: !!localStorage.getItem('token') }">
+  <nav class="fixed top-0 w-full bg-indigo-950/95 backdrop-blur-md z-50 border-b border-amber-600/30" x-data="navbar()">
     <div class="container mx-auto px-6 py-4">
       <div class="flex justify-between items-center">
         <a href="/" class="text-2xl font-bold text-white">Campus Chronicles</a>
@@ -29,7 +29,27 @@
               <li><a href="/login" class="bg-amber-600 px-4 py-2 rounded-full text-white font-bold hover:bg-amber-700 transition">Login</a></li>
           </template>
           <template x-if="loggedIn">
-              <li><button @click="localStorage.clear(); window.location.reload()" class="text-red-400 hover:text-red-300 font-bold">Logout</button></li>
+            <li class="relative">
+              <button @click="open = !open"
+                class="text-white font-bold hover:text-amber-300">
+                Welcome <span x-text="displayName || 'User'"></span> ▾
+              </button>
+
+              <div x-show="open"
+                 @click.outside="open = false"
+                 class="absolute right-0 mt-2 w-40 bg-white rounded-xl shadow-lg overflow-hidden">
+
+                <a href="/profile"
+                  class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                  Profile
+                </a>
+
+                <button @click="logout"
+                  class="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">
+                  Logout
+                </button>
+              </div>
+            </li>
           </template>
         </ul>
       </div>
@@ -47,5 +67,20 @@
       <p class="mt-8 text-lg">© 2025 • Made with passion by IIEST students</p>
     </div>
   </footer>
+  <script>
+    function navbar() {
+      return {
+              loggedIn: !!localStorage.getItem('token'),
+              displayName: localStorage.getItem('display_name'),
+              open: false,
+
+              logout() {
+                        localStorage.clear();
+                        window.location.href = '/';
+              }
+            }
+    }
+  </script>
+
 </body>
 </html>

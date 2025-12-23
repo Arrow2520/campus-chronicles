@@ -33,6 +33,10 @@
         if (res.ok) {
             localStorage.setItem('token', data.access_token);
             localStorage.setItem('role', data.role);
+
+            // temporary display name fallback
+            const emailName = data.email.split('@')[0];
+            localStorage.setItem('display_name', emailName);
             window.location.href = '/';
         } else {
             alert(data.error);

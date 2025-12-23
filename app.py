@@ -43,6 +43,11 @@ def login_page():
 def signup_page():
     return render_template('signup.html')
 
+@app.route('/profile')
+def profile_page():
+    return render_template('profile.html')
+
+
 @app.route('/hostels')
 def hostels_page():
     try:
@@ -130,12 +135,15 @@ def place_detail(slug):
     images = cursor.fetchall()
 
     cursor.execute("""
-        SELECT c.comment_text, c.created_at, u.email
-        FROM comments c
-        JOIN users u ON c.user_id = u.id
-        WHERE c.place_id = %s
-        ORDER BY c.created_at DESC
-    """, (place['id'],))
+                   SELECT c.comment_text,
+                          c.created_at,
+                          COALESCE(u.name, u.email) AS display_name
+                   FROM comments c
+                   JOIN users u ON c.user_id = u.id
+                   WHERE c.place_id = %s
+                   ORDER BY c.created_at DESC
+                   """, (place['id'],))
+
     comments = cursor.fetchall()
 
     cursor.close()
@@ -250,6 +258,44 @@ def add_comment(place_id):
 
     return jsonify({"message": "Comment added"}), 201
 
+@app.route('/api/profile', methods=['GET'])
+@jwt_required()
+def get_profile():
+    user_id = int(get_jwt_identity())
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(
+        "SELECT email, roll_number, name FROM users WHERE id = %s",
+        (user_id,)
+    )
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    return jsonify(user)
+
+@app.route('/api/profile', methods=['PUT'])
+@jwt_required()
+def update_profile():
+    user_id = int(get_jwt_identity())
+    data = request.get_json()
+    name = data.get("name")
+
+    if not name:
+        return jsonify({"error": "Name cannot be empty"}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE users SET name = %s WHERE id = %s",
+        (name, user_id)
+    )
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return jsonify({"message": "Profile updated"})
 
 
 if __name__ == '__main__':
