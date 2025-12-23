@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, render_template
-from flask.cli import load_dotenv
+from dotenv import load_dotenv
 from flask_cors import CORS
 import mysql.connector
 from flask_jwt_extended import (
@@ -59,7 +59,7 @@ def hostels_page():
 
         # Join places with images to get the main image
         query = """
-                SELECT p.*, i.image_url
+                SELECT p.*, MIN(i.image_url) AS image_url
                 FROM places p
                          LEFT JOIN images i ON p.id = i.place_id
                 WHERE p.category = 'Hostel'
@@ -85,7 +85,7 @@ def landmarks_page():
 
         # Get everything that IS NOT a hostel
         query = """
-                SELECT p.*, i.image_url
+                SELECT p.*, MIN(i.image_url) AS image_url
                 FROM places p
                          LEFT JOIN images i ON p.id = i.place_id
                 WHERE p.category != 'Hostel'
