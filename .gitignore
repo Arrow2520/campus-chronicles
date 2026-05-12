@@ -1,0 +1,5 @@
+.idea/
+.venv/
+templates/admin_add_place.html
+h.html
+.env
